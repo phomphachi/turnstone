@@ -1,10 +1,10 @@
-# turnstone.npu.toml — NPU-LLM overlay (opsec, local-first, LiteLLM gateway)
-# KEY'LER DOSYAYA YAZILMAZ -> env OPENAI_API_KEY = LITELLM_MASTER_KEY
-# EGRESS: sadece gateway'e konusur. Hot veri local modelde (default/judge local). Bulut = sanitize.
+# turnstone.npu.wsl.toml — WSL Kali (10.8.0.2) native deploy, LiteLLM gateway
+# secrets env'den: TURNSTONE_JWT_SECRET, OPENAI_API_KEY(=master key), TURNSTONE_DB_URL
 # 1.8.x: server [api].base_url'i per-model'e UYGULAMAZ -> her [models.*] kendi base_url'ini tasir.
+# api_key per-model yoksa OPENAI_API_KEY env'inden gelir. MCP sonra (http).
 
 [api]
-base_url = "http://10.8.0.2:4000/v1"
+base_url = "http://127.0.0.1:4000/v1"   # CLI/REPL icin; server per-model base_url kullanir
 
 [model]
 default = "qher"
@@ -13,32 +13,32 @@ task_model = "ugemma"
 [models.qher]
 model = "qher"
 provider = "openai"
-base_url = "http://10.8.0.2:4000/v1"
+base_url = "http://127.0.0.1:4000/v1"
 context_window = 32768
 [models.ugemma]
 model = "ugemma"
 provider = "openai"
-base_url = "http://10.8.0.2:4000/v1"
+base_url = "http://127.0.0.1:4000/v1"
 context_window = 131072
 [models.ugemma9]
 model = "ugemma9"
 provider = "openai"
-base_url = "http://10.8.0.2:4000/v1"
+base_url = "http://127.0.0.1:4000/v1"
 context_window = 16384
 [models.xqc]
 model = "xqc"
 provider = "openai"
-base_url = "http://10.8.0.2:4000/v1"
+base_url = "http://127.0.0.1:4000/v1"
 context_window = 262144
 [models.xglm]
 model = "xglm"
 provider = "openai"
-base_url = "http://10.8.0.2:4000/v1"
+base_url = "http://127.0.0.1:4000/v1"
 context_window = 131072
 [models.uncq]
 model = "uncq"
 provider = "openai"
-base_url = "http://10.8.0.2:4000/v1"
+base_url = "http://127.0.0.1:4000/v1"
 context_window = 32768
 
 [judge]
@@ -49,14 +49,10 @@ redact_secrets = true
 
 [tools]
 timeout = 300
-web_search_backend = "searxng"
 
 [session]
 auto_compact_pct = 0.8
 compact_max_tokens = 32768
-
-[mcp]
-config_path = "mcp.npu.json"
 
 [memory]
 nudges = true
