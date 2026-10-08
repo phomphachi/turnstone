@@ -1,0 +1,68 @@
+# turnstone.npu.toml — NPU-LLM overlay (opsec, local-first, LiteLLM gateway)
+# Kullanim: --config turnstone.npu.toml  (veya TURNSTONE_CONFIG=... )
+# KEY'LER DOSYAYA YAZILMAZ -> env'den: OPENAI_API_KEY = LITELLM_MASTER_KEY
+#
+# EGRESS KURALI: turnstone SADECE gateway'e (10.8.0.2:4000) konusur. Hot hedef verisi
+# yerel modelde islenir (asagidaki rol atamalari local-pinli). Bulut aliaslar yalniz
+# sanitize is icin; judge MUTLAKA local (tool-call icerigi buluta gitmesin).
+
+[api]
+base_url = "http://10.8.0.2:4000/v1"   # mevcut LiteLLM gateway (VPN-bound)
+# api_key -> env OPENAI_API_KEY (= LITELLM_MASTER_KEY); dosyaya yazilmaz
+
+# --- Varsayilan model: HOT is icin LOCAL ---
+[model]
+name = "qher"                 # Qwen3-4B-Instruct-2507-heretic (local, 32k, %100 GPU)
+task_model = "ugemma"         # ucuz alt-gorev: Gemma-4 (local, 128k)
+context_window = 32768
+
+# --- Named model aliaslar (hepsi gateway uzerinden; rol secimi admin Roles'ta) ---
+[models.qher]
+name = "qher"
+provider = "openai"
+context_window = 32768
+[models.ugemma]
+name = "ugemma"
+provider = "openai"
+context_window = 131072
+[models.ugemma9]
+name = "ugemma9"
+provider = "openai"
+context_window = 16384
+[models.xqc]
+name = "xqc"                  # Qwen3-Coder-Flash (bulut, SANITIZE codegen)
+provider = "openai"
+context_window = 262144
+[models.xglm]
+name = "xglm"                 # GLM-5.3-flash-abliterated (bulut, SANITIZE)
+provider = "openai"
+context_window = 131072
+[models.uncq]
+name = "uncq"                 # unlid qwen 27b (bulut, SANITIZE)
+provider = "openai"
+context_window = 32768
+
+# --- Judge: intent validation + opsec. MODEL = LOCAL (admin Roles -> Judge = ugemma9) ---
+[judge]
+enabled = true
+smart_approvals = false       # geri-alinamaz/riskli call elle onay
+output_guard = true           # tool ciktisini guvenlik sinyali icin tara
+redact_secrets = true         # IP/cred/hash redakte (senin mask() built-in karsiligi)
+
+# --- Tools: web search yerel SearxNG (bundled), opsec ---
+[tools]
+timeout = 300
+web_search_backend = "searxng"
+
+# --- Session: auto-compact acik ---
+[session]
+auto_compact_pct = 0.8
+compact_max_tokens = 32768
+
+# --- MCP: kendi sunucularin (npu-rag/codegen/recon) ---
+[mcp]
+config_path = "mcp.npu.json"
+
+[memory]
+nudges = true
+relevance_k = 5
