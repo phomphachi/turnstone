@@ -1,0 +1,22 @@
+{
+  "_comment": "WSL->Windows interop: turnstone (WSL) Windows python.exe'yi /mnt/c uzerinden spawn eder, script Windows forward-slash path. embed_server/gateway Windows'ta 127.0.0.1.",
+  "mcpServers": {
+    "npu-rag": {
+      "command": "/mnt/c/Users/osmannuriyilmaz/npu-llm/.venv/Scripts/python.exe",
+      "args": ["C:/Users/osmannuriyilmaz/npu-llm/mcp_rag.py"],
+      "env": { "EMBED_REMOTE_URL": "http://127.0.0.1:4003" }
+    },
+    "codegen": {
+      "command": "/mnt/c/Users/osmannuriyilmaz/npu-llm/.venv/Scripts/python.exe",
+      "args": ["C:/Users/osmannuriyilmaz/npu-llm/mcp_codegen.py"],
+      "env": {
+        "TYPESAFE_ENV_FILE": "C:/Users/osmannuriyilmaz/npu-llm/litellm/.env",
+        "LITELLM_ENV_FILE": "C:/Users/osmannuriyilmaz/npu-llm/litellm/.env"
+      }
+    },
+    "recon": {
+      "command": "/mnt/c/Users/osmannuriyilmaz/npu-llm/.venv/Scripts/python.exe",
+      "args": ["C:/Users/osmannuriyilmaz/npu-llm/mcp_recon.py"]
+    }
+  }
+}

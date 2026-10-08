@@ -49,6 +49,11 @@ redact_secrets = true
 
 [tools]
 timeout = 300
+web_search_backend = "searxng"
+searxng_url = "http://127.0.0.1:8888"
+
+[mcp]
+config_path = "/home/kalici/mcp.npu.wsl.json"
 
 [session]
 auto_compact_pct = 0.8
